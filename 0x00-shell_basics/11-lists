@@ -1,2 +1,2 @@
 #!/bin/bash
-ls -a -l $PWD cd .. /boot
+ls -a -l $PWD /alx-system_engineering-devops /boot
