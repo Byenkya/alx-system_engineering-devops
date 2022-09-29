@@ -43,7 +43,7 @@ frontend www-http
    default_backend www-backend  
         
 frontend www-https                                                                                                                      
-   bind *:443 ssl crt /etc/haproxy/certs/www.kalkidandesign.tech.pem
+   bind *:443 ssl crt /etc/haproxy/certs/www.jbyenkyaaaron.tech.pem
    http-request redirect scheme https code 301 unless { ssl_fc }
    reqadd X-Forwarded-Proto:\ https                                                                                                     
    acl letsencrypt-acl path_beg /.well-known/acme-challenge/                                                                            
@@ -52,8 +52,8 @@ frontend www-https
                                                                                                                                         
 backend www-backend                                                                                                                     
    redirect scheme https if !{ ssl_fc }                                                                                                 
-   server 145-web-01 34.73.20.46:80 check                                                                                               
-   server 145-web-02 34.73.71.102:80 check                                                                                              
+   server 24847-web-01 3.238.180.65:80 check                                                                                               
+   server 24847-web-02 3.235.62.78:80 check                                                                                              
                                                                                                                                         
 backend letsencrypt-backend                                                                                                             
    server letsencrypt 127.0.0.1:54321
