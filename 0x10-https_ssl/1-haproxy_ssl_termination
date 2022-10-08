@@ -8,8 +8,8 @@ global
 defaults
     log     global
     mode    http
-    option  httplog
-    option  dontlognull
+    option  forwardfor
+    option  http-server-close
     retries 3
     option  redispatch
     timeout connect  5000
@@ -19,22 +19,22 @@ defaults
     option  http-server-close
 
 frontend www-http
-    bind   0.0.0.0:80
-    reqadd X-Forwarded-Proto:\ http
-    default_backend www-backend
+        bind *:80
+        http-request redirect scheme https code 301 unless { ssl_fc }
+        http-request set-header X-Forwarded-Proto http
+        default_backend www-backend
 
 frontend www-https
-    bind   0.0.0.0:443 ssl crt /etc/haproxy/certs/www.bdbnb.site.pem
-    reqadd X-Forwarded-Proto:\ https
-    acl    letsencrypt-acl path_beg /.well-known/acme-challenge/
-    use_backend letsencrypt-backend if letsencrypt-acl
-    default_backend www-backend
+        bind *:443 ssl crt /etc/haproxy/certs/www.jbyenkyaaaron.tech.pem
+        http-request set-header X-Forwarded-Proto https
+        acl letsencrypt-acl path_beg /.well-known/acme-challenge/
+        use_backend letsencrypt-backend if letsencrypt-acl
+        default_backend www-backend
 
 backend www-backend
-    balance  roundrobin
-    redirect scheme https if !{ ssl_fc }
-    server 24847-web-01 3.238.180.65 check
-    server 24847-web-02 3.235.62.78 check
+        redirect scheme https if !{ ssl_fc }
+        server web-01 3.238.180.65:80 check
+        server web-02 3.235.62.78:80 check
 
 backend letsencrypt-backend
-    server letsencrypt 127.0.0.1:54321
+        server letsencrypt 127.0.0.1:54321
